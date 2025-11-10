@@ -1,0 +1,47 @@
+# Frontend
+Stok-Maliyet-FrontEnd/node_modules/
+Stok-Maliyet-FrontEnd/build/
+Stok-Maliyet-FrontEnd/.env.local
+Stok-Maliyet-FrontEnd/.env.development.local
+Stok-Maliyet-FrontEnd/.env.test.local
+Stok-Maliyet-FrontEnd/.env.production.local
+Stok-Maliyet-FrontEnd/npm-debug.log*
+Stok-Maliyet-FrontEnd/yarn-debug.log*
+Stok-Maliyet-FrontEnd/yarn-error.log*
+Stok-Maliyet-FrontEnd/.pnp
+Stok-Maliyet-FrontEnd/.pnp.js
+Stok-Maliyet-FrontEnd/coverage/
+
+# Backend
+StokMaliyetBackend/target/
+StokMaliyetBackend/.mvn/wrapper/maven-wrapper.jar
+StokMaliyetBackend/.apt_generated
+StokMaliyetBackend/.classpath
+StokMaliyetBackend/.factorypath
+StokMaliyetBackend/.project
+StokMaliyetBackend/.settings
+StokMaliyetBackend/.springBeans
+StokMaliyetBackend/.sts4-cache
+StokMaliyetBackend/.idea/
+StokMaliyetBackend/*.iws
+StokMaliyetBackend/*.iml
+StokMaliyetBackend/*.ipr
+StokMaliyetBackend/nbproject/private/
+StokMaliyetBackend/nbbuild/
+StokMaliyetBackend/dist/
+StokMaliyetBackend/nbdist/
+StokMaliyetBackend/.nb-gradle/
+StokMaliyetBackend/build/
+StokMaliyetBackend/.vscode/
+
+# General
+.DS_Store
+*.log
+.env
+.env.local
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
