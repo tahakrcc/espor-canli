@@ -135,6 +135,6 @@ Bu proje MIT lisansı altında lisanslanmıştır.
 
 ## 📞 İletişim
 
-Proje Sahibi - [@your-username](https://github.com/your-username)
+Proje Sahibi - [@your-username](https://github.com/ibrahimhalilakgl)
 
 Proje Linki: [https://github.com/your-username/StokVeMaliyetBackEnd](https://github.com/your-username/StokVeMaliyetBackEnd) 
