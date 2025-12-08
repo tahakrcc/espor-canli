@@ -1,0 +1,156 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum EventStatus {
+  DRAFT
+  ACTIVE
+  ENDED
+}
+
+enum GameType {
+  PONG
+  SLIME_VOLLEYBALL
+  SNAKE
+  TETRIS
+}
+
+enum MatchStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  username      String    @unique
+  firstName     String
+  lastName      String
+  password      String
+  role          UserRole  @default(USER)
+  xp            Int       @default(0)
+  profileNote   String?
+  isBanned      Boolean   @default(false)
+  isMuted       Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  eventParticipants EventParticipant[]
+  scores            Score[]
+  matchesAsPlayer1  Match[] @relation("Player1")
+  matchesAsPlayer2  Match[] @relation("Player2")
+  matchesAsWinner   Match[] @relation("Winner")
+
+  @@map("users")
+}
+
+model Event {
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  description     String?
+  startTime       DateTime
+  endTime         DateTime
+  status          EventStatus @default(DRAFT)
+  isLive          Boolean     @default(false)
+  tournamentMode  Boolean     @default(false)
+  currentGameType GameType?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  games            Game[]
+  participants     EventParticipant[]
+  matches          Match[]
+
+  @@map("events")
+}
+
+model Game {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  eventId     String   @db.ObjectId
+  gameType    GameType
+  isActive    Boolean  @default(false)
+  startedAt   DateTime?
+  endedAt     DateTime?
+  createdAt   DateTime @default(now())
+  
+  event       Event    @relation(fields: [eventId], references: [id])
+  
+  @@index([eventId])
+  @@map("games")
+}
+
+model EventParticipant {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  eventId   String   @db.ObjectId
+  joinedAt DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id])
+  event     Event    @relation(fields: [eventId], references: [id])
+  
+  @@unique([userId, eventId])
+  @@index([eventId])
+  @@index([userId])
+  @@map("event_participants")
+}
+
+model Match {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  eventId       String      @db.ObjectId
+  gameType      GameType
+  player1Id     String      @db.ObjectId
+  player2Id     String?     @db.ObjectId
+  status        MatchStatus @default(PENDING)
+  round         Int?
+  player1Score  Int         @default(0)
+  player2Score  Int         @default(0)
+  winnerId      String?     @db.ObjectId
+  startedAt     DateTime?
+  completedAt   DateTime?
+  createdAt     DateTime    @default(now())
+  
+  event         Event       @relation(fields: [eventId], references: [id])
+  player1       User        @relation("Player1", fields: [player1Id], references: [id])
+  player2       User?       @relation("Player2", fields: [player2Id], references: [id])
+  winner        User?       @relation("Winner", fields: [winnerId], references: [id])
+  
+  @@index([eventId])
+  @@index([player1Id])
+  @@index([player2Id])
+  @@map("matches")
+}
+
+model Score {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  eventId     String   @db.ObjectId
+  gameType    GameType
+  score       Int      @default(0)
+  wins        Int      @default(0)
+  losses      Int      @default(0)
+  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  
+  user        User     @relation(fields: [userId], references: [id])
+  
+  @@unique([userId, eventId, gameType])
+  @@index([eventId])
+  @@index([userId])
+  @@index([gameType])
+  @@map("scores")
+}
+
