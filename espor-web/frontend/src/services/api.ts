@@ -1,7 +1,16 @@
 import axios from 'axios';
 
+// In production, frontend and backend are on the same domain, so use relative path
+// Always use /api as baseURL since backend routes are mounted at /api/*
+const baseURL = '/api';
+
+// Debug: Log the baseURL in development
+if (import.meta.env.DEV) {
+  console.log('API BaseURL:', baseURL, 'VITE_API_URL:', import.meta.env.VITE_API_URL);
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL,
   headers: {
     'Content-Type': 'application/json'
   }
