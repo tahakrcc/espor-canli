@@ -12,7 +12,13 @@ interface PlaylistItem {
 // Helper to get API URL safely
 const getApiUrl = () => {
     // @ts-ignore
-    return import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+    const envUrl = import.meta.env.VITE_API_URL;
+    // If VITE_API_URL is set and is a full URL (starts with http), use it
+    if (envUrl && envUrl.startsWith('http')) {
+        return envUrl.endsWith('/api') ? envUrl : `${envUrl.replace(/\/$/, '')}/api`;
+    }
+    // Otherwise, use relative path /api (works in production where frontend/backend same domain)
+    return '/api';
 };
 
 // Helper to get Base URL (for static files)
@@ -111,20 +117,22 @@ export const VideoAdminPanel: React.FC<VideoAdminPanelProps> = ({ isDirectorView
 
     const loadPlaylist = async () => {
         try {
-            const res = await axios.get(`${API_URL} /video/playlist ? t = ${Date.now()} `);
+            const res = await axios.get(`${API_URL}/video/playlist?t=${Date.now()}`);
             const mappedPlaylist = res.data.map((item: any) => {
                 const isFile = item.type === 'file' || item.videoUrl?.startsWith('/');
                 return {
                     title: item.title,
                     type: item.type || (isFile ? 'file' : 'youtube'),
                     // Handle property mismatch and relative URLs
-                    url: item.url || (isFile ? `${BASE_URL}${item.videoUrl} ` : item.videoUrl),
-                    thumbnailUrl: item.thumbnailUrl ? (item.thumbnailUrl.startsWith('http') ? item.thumbnailUrl : `${BASE_URL}${item.thumbnailUrl} `) : undefined
+                    url: item.url || (isFile ? `${BASE_URL}${item.videoUrl}` : item.videoUrl),
+                    thumbnailUrl: item.thumbnailUrl ? (item.thumbnailUrl.startsWith('http') ? item.thumbnailUrl : `${BASE_URL}${item.thumbnailUrl}`) : undefined
                 };
             });
             setPlaylist(mappedPlaylist);
         } catch (error) {
             console.error('Failed to load playlist', error);
+            // Set empty playlist on error to prevent UI issues
+            setPlaylist([]);
         }
     };
 
@@ -141,10 +149,10 @@ export const VideoAdminPanel: React.FC<VideoAdminPanelProps> = ({ isDirectorView
         try {
             const token = localStorage.getItem('token');
             console.log('Using token:', token ? 'Found' : 'Missing');
-            console.log('Posting to:', `${API_URL} /video/playlist`);
+            console.log('Posting to:', `${API_URL}/video/playlist`);
 
-            await axios.post(`${API_URL} /video/playlist`, playlist, {
-                headers: { 'Authorization': `Bearer ${token} ` }
+            await axios.post(`${API_URL}/video/playlist`, playlist, {
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             console.log('Save successful');
             alert('Playlist başarıyla kaydedildi!');
