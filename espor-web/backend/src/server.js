@@ -97,12 +97,43 @@ securityService.createSecurityAlert = async function (...args) {
 
 const PORT = process.env.PORT || 3001;
 
-// Test database connection
-pool.query('SELECT NOW()', (err, res) => {
+// Test database connection and create admin user if not exists
+pool.query('SELECT NOW()', async (err, res) => {
   if (err) {
     console.error('❌ Database connection failed:', err.message);
   } else {
     console.log('✅ Database connected successfully');
+    
+    // Auto-create admin user if not exists
+    try {
+      const bcrypt = require('bcrypt');
+      const adminUsername = 'admin';
+      const adminPassword = 'admin123';
+      
+      // Check if admin exists
+      const adminCheck = await pool.query(
+        'SELECT id FROM users WHERE username = $1',
+        [adminUsername]
+      );
+      
+      if (adminCheck.rows.length === 0) {
+        // Create admin user
+        const hashedPassword = await bcrypt.hash(adminPassword, 10);
+        const result = await pool.query(
+          'INSERT INTO users (username, password_hash, role) VALUES ($1, $2, $3) RETURNING id, username, role',
+          [adminUsername, hashedPassword, 'admin']
+        );
+        console.log('✅ Admin user created automatically:', result.rows[0]);
+        console.log(`   Username: ${adminUsername}`);
+        console.log(`   Password: ${adminPassword}`);
+        console.log('   ⚠️  Please change the password after first login!');
+      } else {
+        console.log('✅ Admin user already exists');
+      }
+    } catch (error) {
+      console.error('⚠️  Could not create admin user:', error.message);
+      // Don't exit - server can still run
+    }
   }
 });
 

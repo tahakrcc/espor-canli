@@ -20,11 +20,26 @@ export default function Logo({ size = 'medium', showText = false, className = ''
           src="/logo.jpg" 
           alt="İnönü E-Spor Logo" 
           onError={(e) => {
-            // Fallback to SVG if image not found
+            // Try other formats
             const target = e.target as HTMLImageElement;
-            target.style.display = 'none';
-            const svg = target.nextElementSibling as HTMLElement;
-            if (svg) svg.style.display = 'block';
+            const formats = ['/logo.jpeg', '/logo.png', '/logo.webp'];
+            const currentSrc = target.src.split('/').pop() || '';
+            
+            if (currentSrc === 'logo.jpg') {
+              // Try jpeg
+              target.src = '/logo.jpeg';
+            } else if (currentSrc === 'logo.jpeg') {
+              // Try png
+              target.src = '/logo.png';
+            } else if (currentSrc === 'logo.png') {
+              // Try webp
+              target.src = '/logo.webp';
+            } else {
+              // Fallback to SVG if all image formats fail
+              target.style.display = 'none';
+              const svg = target.nextElementSibling as HTMLElement;
+              if (svg) svg.style.display = 'block';
+            }
           }}
           style={{ width: '100%', height: '100%', objectFit: 'contain' }}
         />
