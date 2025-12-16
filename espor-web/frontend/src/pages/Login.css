@@ -20,26 +20,12 @@
 }
 
 .logo-container {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 30px;
   padding-bottom: 20px;
   border-bottom: 2px solid var(--border-color);
-}
-
-.logo-text {
-  font-size: 32px;
-  font-weight: 800;
-  color: var(--primary-color);
-  letter-spacing: 2px;
-  margin-bottom: 0;
-}
-
-.logo-subtitle {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--primary-light);
-  letter-spacing: 3px;
-  text-transform: uppercase;
 }
 
 .login-box h2 {

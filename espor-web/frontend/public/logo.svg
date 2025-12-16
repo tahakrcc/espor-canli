@@ -1,0 +1,38 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Background circle (purple) -->
+  <circle cx="60" cy="60" r="58" fill="#6B2C91" stroke="#5A1F7A" stroke-width="2"/>
+  
+  <!-- Stylized calligraphic design (white) -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+    <!-- Left side - Alif with decorative top -->
+    <path d="M 25 20 L 25 25 M 25 25 L 30 25 M 30 25 L 30 30 M 30 30 L 35 30 M 35 30 L 35 35 M 25 35 L 25 85 M 25 85 L 20 90"/>
+    
+    <!-- Center - Lam Lam (converging lines) -->
+    <path d="M 45 20 L 45 90 M 55 20 L 55 90 M 45 90 L 50 95 M 55 90 L 50 95"/>
+    
+    <!-- Right side - Ha with decorative top and curve -->
+    <path d="M 85 20 L 85 25 M 85 25 L 90 25 M 90 25 L 90 30 M 90 30 L 95 30 M 85 30 Q 85 50 80 70 Q 75 85 75 90 M 75 90 L 70 95"/>
+  </g>
+  
+  <!-- More detailed calligraphic paths for better representation -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)">
+    <!-- Left vertical stroke with inward bend -->
+    <path d="M 28 22 L 28 25 L 32 25 L 32 28 M 28 28 L 28 82 L 24 88"/>
+    
+    <!-- Center converging strokes -->
+    <path d="M 48 22 L 48 88 M 52 22 L 52 88 M 48 88 L 50 92 M 52 88 L 50 92"/>
+    
+    <!-- Right curved stroke -->
+    <path d="M 82 22 L 82 25 L 88 25 L 88 28 M 82 28 Q 82 45 78 65 Q 74 82 74 88 M 74 88 L 72 92"/>
+  </g>
+</svg>
+

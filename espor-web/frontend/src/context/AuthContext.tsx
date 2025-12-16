@@ -52,18 +52,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const login = async (username: string, password: string) => {
-    const response = await api.post('/auth/login', { username, password });
-    const { token: authToken, user: userData } = response.data;
-    
-    localStorage.setItem('token', authToken);
-    localStorage.setItem('user', JSON.stringify(userData));
-    setToken(authToken);
-    setUser(userData);
+    try {
+      const response = await api.post('/auth/login', { username, password });
+      const { token: authToken, user: userData } = response.data;
+      
+      localStorage.setItem('token', authToken);
+      localStorage.setItem('user', JSON.stringify(userData));
+      setToken(authToken);
+      setUser(userData);
+    } catch (error: any) {
+      console.error('Login error:', error);
+      throw error;
+    }
   };
 
   const register = async (username: string, password: string) => {
-    await api.post('/auth/register', { username, password });
-    await login(username, password);
+    try {
+      await api.post('/auth/register', { username, password });
+      await login(username, password);
+    } catch (error: any) {
+      console.error('Register error:', error);
+      throw error;
+    }
   };
 
   const logout = () => {

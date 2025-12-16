@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Logo from '../components/UI/Logo';
 import './Login.css';
 
 export default function Login() {
@@ -38,8 +39,7 @@ export default function Login() {
     <div className="login-container">
       <div className="login-box">
         <div className="logo-container">
-          <div className="logo-text">İNÖNÜ</div>
-          <div className="logo-subtitle">E-SPOR</div>
+          <Logo size="medium" showText={true} />
         </div>
         <h2>Giriş Yap</h2>
         <form onSubmit={handleSubmit}>

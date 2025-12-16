@@ -5,8 +5,8 @@ const bcrypt = require('bcrypt');
 const pool = require('../config/database');
 
 async function createAdmin() {
-  const username = 'TK';
-  const password = 'taha';
+  const username = 'admin';
+  const password = 'admin123';
   
   const hashedPassword = await bcrypt.hash(password, 10);
   

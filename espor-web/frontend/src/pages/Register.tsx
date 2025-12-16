@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Logo from '../components/UI/Logo';
 import './Login.css';
 
 export default function Register() {
@@ -30,7 +31,7 @@ export default function Register() {
 
     try {
       await register(username, password);
-      navigate('/login');
+      navigate('/event/list');
     } catch (err: any) {
       setError(err.response?.data?.error || 'Kayıt başarısız');
     } finally {
@@ -42,8 +43,7 @@ export default function Register() {
     <div className="login-container">
       <div className="login-box">
         <div className="logo-container">
-          <div className="logo-text">İNÖNÜ</div>
-          <div className="logo-subtitle">E-SPOR</div>
+          <Logo size="medium" showText={true} />
         </div>
         <h2>Kayıt Ol</h2>
         <form onSubmit={handleSubmit}>

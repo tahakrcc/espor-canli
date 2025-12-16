@@ -36,15 +36,21 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
   try {
+    console.log('[LOGIN] Request body:', req.body);
     const { username, password } = req.body;
 
     if (!username || !password) {
+      console.log('[LOGIN] Missing fields - username:', !!username, 'password:', !!password);
       return res.status(400).json({ error: 'Username and password are required' });
     }
 
+    console.log('[LOGIN] Attempting to login user:', username);
     const result = await authService.login(username, password);
+    console.log('[LOGIN] Success! User ID:', result.user.id);
     res.json(result);
   } catch (error) {
+    console.error('[LOGIN] Error:', error.message);
+    console.error('[LOGIN] Stack:', error.stack);
     res.status(401).json({ error: error.message });
   }
 });

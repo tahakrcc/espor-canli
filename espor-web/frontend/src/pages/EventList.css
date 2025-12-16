@@ -17,7 +17,13 @@
     border: 1px solid var(--border-color);
 }
 
-.header-left h1 {
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header-text h1 {
     color: var(--primary-color);
     font-size: 24px;
     margin-bottom: 5px;
@@ -25,7 +31,7 @@
     text-transform: uppercase;
 }
 
-.header-left p {
+.header-text p {
     color: var(--text-secondary);
     font-size: 14px;
 }

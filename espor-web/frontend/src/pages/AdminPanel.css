@@ -18,6 +18,12 @@
   border: 1px solid var(--border-color);
 }
 
+.admin-header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
 .admin-header h1 {
   color: var(--primary-color);
   margin: 0;

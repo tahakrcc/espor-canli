@@ -20,6 +20,15 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Log error details for debugging
+    console.error('API Error:', {
+      url: error.config?.url,
+      method: error.config?.method,
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    });
+    
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       window.location.href = '/login';

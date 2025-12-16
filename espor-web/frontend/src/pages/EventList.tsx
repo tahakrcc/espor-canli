@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Logo from '../components/UI/Logo';
 import api from '../services/api';
 import './EventList.css';
 
@@ -40,8 +41,11 @@ export default function EventList() {
         <div className="event-list-page">
             <div className="event-list-header">
                 <div className="header-left">
-                    <h1>Etkinlikler</h1>
-                    <p>Katılabileceğiniz aktif etkinlikler</p>
+                    <Logo size="small" showText={true} />
+                    <div className="header-text">
+                        <h1>Etkinlikler</h1>
+                        <p>Katılabileceğiniz aktif etkinlikler</p>
+                    </div>
                 </div>
                 <div className="header-right">
                     <span className="username">Merhaba, {user?.username}</span>

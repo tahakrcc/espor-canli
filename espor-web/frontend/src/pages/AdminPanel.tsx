@@ -4,6 +4,7 @@ import { useAdminSocket } from '../hooks/useAdminSocket';
 import { useAuth } from '../context/AuthContext';
 import { SecurityAlerts } from '../components/Admin/SecurityAlerts';
 import { EventLeaderboard } from '../components/Leaderboard/EventLeaderboard';
+import Logo from '../components/UI/Logo';
 import api from '../services/api';
 import './AdminPanel.css';
 
@@ -131,7 +132,10 @@ export default function AdminPanel() {
   return (
     <div className="admin-panel">
       <div className="admin-header">
-        <h1>Admin Panel</h1>
+        <div className="admin-header-left">
+          <Logo size="small" showText={true} />
+          <h1>Admin Panel</h1>
+        </div>
         <button onClick={logout} className="logout-btn">Çıkış Yap</button>
       </div>
 

@@ -1,0 +1,84 @@
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logo-small .logo-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.logo-medium .logo-icon {
+  width: 80px;
+  height: 80px;
+}
+
+.logo-large .logo-icon {
+  width: 120px;
+  height: 120px;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.logo-text-main {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--primary-color, #6B2C91);
+  letter-spacing: 2px;
+  line-height: 1.2;
+}
+
+.logo-text-subtitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary-light, #8B4CA8);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.logo-small .logo-text-main {
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.logo-small .logo-text-subtitle {
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+.logo-large .logo-text-main {
+  font-size: 32px;
+  letter-spacing: 3px;
+}
+
+.logo-large .logo-text-subtitle {
+  font-size: 14px;
+  letter-spacing: 4px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .logo-text-main {
+    color: var(--primary-color, #9D5BB8);
+  }
+  
+  .logo-text-subtitle {
+    color: var(--primary-light, #B87DD1);
+  }
+}
+
