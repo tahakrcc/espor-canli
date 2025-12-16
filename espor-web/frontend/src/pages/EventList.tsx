@@ -33,8 +33,17 @@ export default function EventList() {
         }
     };
 
-    const handleJoinEvent = (eventId: string) => {
-        navigate(`/event/${eventId}`);
+    const handleJoinEvent = async (eventId: string) => {
+        try {
+            // API call to join event
+            await api.post(`/events/${eventId}/join`);
+            // Navigate to event page
+            navigate(`/event/${eventId}`);
+        } catch (error: any) {
+            console.error('Error joining event:', error);
+            const errorMessage = error.response?.data?.error || error.message || 'Etkinliğe katılırken hata oluştu';
+            alert(errorMessage);
+        }
     };
 
     return (

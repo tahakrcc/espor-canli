@@ -41,13 +41,29 @@ class EventService {
 
   async leaveEvent(eventId, userId) {
     try {
+      // Check if user is actually a participant
+      const checkResult = await pool.query(
+        'SELECT id FROM event_participants WHERE event_id = $1 AND user_id = $2',
+        [eventId, userId]
+      );
+
+      if (checkResult.rows.length === 0) {
+        // User is not a participant, but that's okay - just return success
+        console.log(`User ${userId} is not a participant of event ${eventId}, but leaving anyway`);
+        return true;
+      }
+
+      // Remove from event_participants
       await pool.query(
         'DELETE FROM event_participants WHERE event_id = $1 AND user_id = $2',
         [eventId, userId]
       );
+
+      console.log(`User ${userId} left event ${eventId}`);
       return true;
     } catch (error) {
-      throw error;
+      console.error('Error in leaveEvent:', error);
+      throw new Error(`Etkinlikten ayrılırken hata oluştu: ${error.message}`);
     }
   }
 

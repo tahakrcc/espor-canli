@@ -36,28 +36,44 @@ export default function EventPage() {
 
   const [eventName, setEventName] = useState('');
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
+  const [isParticipant, setIsParticipant] = useState(false);
+  const [isJoining, setIsJoining] = useState(false);
 
   const handleLeaveEvent = async () => {
-    if (!eventId || !socket) return;
+    if (!eventId) {
+      console.error('Event ID is missing');
+      alert('Etkinlik ID bulunamadı.');
+      setIsLeaveModalOpen(false);
+      return;
+    }
+
     try {
-      // API call to leave
+      // API call to leave (this removes from database)
       await api.post(`/events/${eventId}/leave`);
 
-      // Emit socket event to notify others immediately
-      socket.emit('event:leave', eventId);
+      // Emit socket event to notify others immediately (if socket is connected)
+      if (socket && connected) {
+        try {
+          socket.emit('event:leave', eventId);
+        } catch (socketError) {
+          console.warn('Socket emit failed, but API call succeeded:', socketError);
+          // Continue anyway - API call succeeded
+        }
+      }
 
       // Navigate back to event list
       navigate('/events');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error leaving event:', error);
-      alert('Etkinlikten ayrılırken hata oluştu.');
+      const errorMessage = error.response?.data?.error || error.message || 'Bilinmeyen bir hata oluştu';
+      alert(`Etkinlikten ayrılırken hata oluştu: ${errorMessage}`);
     } finally {
       setIsLeaveModalOpen(false);
     }
   };
 
   useEffect(() => {
-    if (!eventId) return;
+    if (!eventId || !user) return;
 
     // Event bilgilerini getir
     api.get(`/events/${eventId}`)
@@ -65,16 +81,52 @@ export default function EventPage() {
         setEventName(res.data.event.name);
         setParticipants(res.data.participants);
         setLeaderboard(res.data.leaderboard);
+        
+        // Check if user is already a participant
+        const userIsParticipant = res.data.participants.some((p: Participant) => p.id === user.id);
+        setIsParticipant(userIsParticipant);
       })
       .catch(err => console.error('Error fetching event:', err));
-  }, [eventId]);
+  }, [eventId, user]);
+
+  const handleJoinEvent = async () => {
+    if (!eventId || !socket || !connected || isJoining) return;
+    
+    setIsJoining(true);
+    try {
+      // API call to join
+      await api.post(`/events/${eventId}/join`);
+      
+      // Socket join
+      socket.emit('event:join', eventId);
+      socket.emit('leaderboard:subscribe', eventId);
+      
+      setIsParticipant(true);
+      
+      // Refresh event data
+      const res = await api.get(`/events/${eventId}`);
+      setParticipants(res.data.participants);
+      setLeaderboard(res.data.leaderboard);
+    } catch (error: any) {
+      console.error('Error joining event:', error);
+      const errorMessage = error.response?.data?.error || error.message || 'Etkinliğe katılırken hata oluştu';
+      alert(errorMessage);
+    } finally {
+      setIsJoining(false);
+    }
+  };
 
   useEffect(() => {
     if (!socket || !eventId || !connected) return;
 
-    // Etkinliğe katıl
-    socket.emit('event:join', eventId);
-    socket.emit('leaderboard:subscribe', eventId);
+    // Only auto-join if user is already a participant
+    if (isParticipant) {
+      socket.emit('event:join', eventId);
+      socket.emit('leaderboard:subscribe', eventId);
+    } else {
+      // Just subscribe to leaderboard updates (read-only)
+      socket.emit('leaderboard:subscribe', eventId);
+    }
 
     // Event detayları
     socket.on('event:details', (data: any) => {
@@ -130,7 +182,7 @@ export default function EventPage() {
       socket.off('round:finished');
       socket.off('user:disqualified');
     };
-  }, [socket, eventId, connected, navigate, user]);
+  }, [socket, eventId, connected, navigate, user, isParticipant]);
 
   if (!connected) {
     return <div className="loading">Bağlanılıyor...</div>;
@@ -141,9 +193,19 @@ export default function EventPage() {
       <div className="event-header">
         <div className="header-left">
           <h1>{eventName || 'Etkinlik'}</h1>
-          <button className="leave-btn" onClick={() => setIsLeaveModalOpen(true)}>
-            Etkinlikten Ayrıl
-          </button>
+          {isParticipant ? (
+            <button className="leave-btn" onClick={() => setIsLeaveModalOpen(true)}>
+              Etkinlikten Ayrıl
+            </button>
+          ) : (
+            <button 
+              className="join-btn" 
+              onClick={handleJoinEvent}
+              disabled={isJoining}
+            >
+              {isJoining ? 'Katılıyor...' : 'Etkinliğe Katıl'}
+            </button>
+          )}
         </div>
         {userRank && (
           <div className="user-rank">
