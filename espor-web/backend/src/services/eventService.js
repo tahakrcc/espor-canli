@@ -43,7 +43,7 @@ class EventService {
     try {
       // Check if user is actually a participant
       const checkResult = await pool.query(
-        'SELECT 1 FROM event_participants WHERE event_id = $1 AND user_id = $2',
+        'SELECT id FROM event_participants WHERE event_id = $1 AND user_id = $2',
         [eventId, userId]
       );
 
@@ -103,18 +103,10 @@ class EventService {
     const participants = await this.getEventParticipants(eventId);
     const leaderboard = await this.getEventLeaderboard(eventId);
 
-    // Get active round if exists
-    const roundResult = await pool.query(
-      "SELECT * FROM game_rounds WHERE event_id = $1 AND status != 'finished' ORDER BY created_at DESC LIMIT 1",
-      [eventId]
-    );
-    const activeRound = roundResult.rows[0] || null;
-
     return {
       event: event.rows[0],
       participants,
-      leaderboard,
-      activeRound
+      leaderboard
     };
   }
 

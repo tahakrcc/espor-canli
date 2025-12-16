@@ -95,12 +95,13 @@ export default function GamePage() {
       }
     });
 
-    // Auto redirect logic
+    // Auto redirect logic with delay
     if (eventId && !isRedirecting) {
       setIsRedirecting(true);
+      // Wait 2 seconds to let the user see the Game Over screen
       setTimeout(() => {
         navigate(`/event/${eventId}`);
-      }, 3000); // 3 seconds delay to see score
+      }, 2000);
     }
   };
 
@@ -116,12 +117,12 @@ export default function GamePage() {
       }
     });
 
-    // Auto redirect logic
+    // Auto redirect logic with delay
     if (eventId && !isRedirecting) {
       setIsRedirecting(true);
       setTimeout(() => {
         navigate(`/event/${eventId}`);
-      }, 3000);
+      }, 2000);
     }
   };
 

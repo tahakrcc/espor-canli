@@ -128,9 +128,8 @@ export function EndlessRunnerGame({ onScoreUpdate, onGameEnd, onEliminated, roun
           newY + RUNNER_SIZE < platformScreenY + PLATFORM_HEIGHT &&
           runnerVelocity.current > 0
         ) {
-          // Auto-bounce mechanism (Doodle Jump style)
-          runnerVelocity.current = JUMP_STRENGTH;
-          // finalY = platformScreenY - RUNNER_SIZE; // No need to snap, just bounce
+          runnerVelocity.current = 0;
+          finalY = platformScreenY - RUNNER_SIZE;
         }
       });
 
@@ -190,22 +189,20 @@ export function EndlessRunnerGame({ onScoreUpdate, onGameEnd, onEliminated, roun
     if (e.cancelable) {
       e.preventDefault();
     }
-    if (!gameStarted) {
-      startGame();
-    }
+    jump();
   };
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (!gameStarted && (e.code === 'Space' || e.code === 'ArrowUp')) {
+      if (e.code === 'Space' || e.code === 'ArrowUp') {
         e.preventDefault();
-        startGame();
+        jump();
       } else if (e.code === 'ArrowLeft') {
         e.preventDefault();
-        runnerX.current = Math.max(0, runnerX.current - 15); // Increased sensitivity
+        runnerX.current = Math.max(0, runnerX.current - 10);
       } else if (e.code === 'ArrowRight') {
         e.preventDefault();
-        runnerX.current = Math.min(300, runnerX.current + 15); // Increased sensitivity
+        runnerX.current = Math.min(300, runnerX.current + 10);
       }
     };
 
@@ -213,18 +210,75 @@ export function EndlessRunnerGame({ onScoreUpdate, onGameEnd, onEliminated, roun
     return () => window.removeEventListener('keydown', handleKey);
   }, [gameStarted, gameOver]);
 
+  // Touch handling
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+  const isSwiping = useRef(false);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    // e.preventDefault(); // Don't prevent default immediately to allow click generation if it's a tap
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    isSwiping.current = false;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+
+    const currentX = e.touches[0].clientX;
+    const currentY = e.touches[0].clientY;
+    const diffX = currentX - touchStartX.current;
+    const diffY = currentY - (touchStartY.current || 0);
+
+    // If horizontal movement is significant, treat as swipe/move
+    if (Math.abs(diffX) > 10 && Math.abs(diffX) > Math.abs(diffY)) {
+      isSwiping.current = true;
+      // Move runner
+      // Adjust sensitivity as needed
+      const moveAmount = diffX * 1.5;
+      runnerX.current = Math.max(0, Math.min(300, runnerX.current + moveAmount));
+
+      // Reset start X to prevent continuous acceleration, make it essentially "drag"
+      touchStartX.current = currentX;
+    }
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    touchStartX.current = null;
+    touchStartY.current = null;
+
+    // If not swiping, treat as tap/jump
+    if (!isSwiping.current) {
+      jump();
+    }
+    isSwiping.current = false;
+  };
+
   return (
     <div
       className="endless-runner-game vertical"
-      onClick={handleInteraction}
-      onTouchStart={handleInteraction}
+      onClick={(e) => {
+        // Only jump if it wasn't a touch interaction that we already handled
+        // But React's onClick might fire after touch. 
+        // Simplest is to just allow onClick for mouse users.
+        // For touch users, handleTouchEnd takes care of jumping.
+        // We can detect if it was a touch event or mouse event?
+        // Actually, let's just leave onClick for mouse.
+        // If touch triggers click, we might jump twice? 
+        // Let's rely on handleTouchEnd preventing default or something?
+        // Or just check e.type
+        handleInteraction(e);
+      }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       <div className="game-instructions">
         {!gameStarted && !gameOver && (
           <div className="start-screen">
             <h2>Endless Runner</h2>
             <p>Başlamak için dokunun veya SPACE tuşuna basın</p>
-            <p>Sol/Sağ ok tuşları ile hareket edin</p>
+            <p>Sol/Sağ ok tuşları veya kaydırma ile hareket edin</p>
           </div>
         )}
         {gameOver && <div className="game-over">Oyun Bitti! Skor: {score}</div>}
