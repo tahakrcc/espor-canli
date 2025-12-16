@@ -3,6 +3,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 require('dotenv').config();
+const pool = require('./config/database');
 
 const app = express();
 const server = http.createServer(app);
@@ -95,6 +96,15 @@ securityService.createSecurityAlert = async function (...args) {
 };
 
 const PORT = process.env.PORT || 3001;
+
+// Test database connection
+pool.query('SELECT NOW()', (err, res) => {
+  if (err) {
+    console.error('❌ Database connection failed:', err.message);
+  } else {
+    console.log('✅ Database connected successfully');
+  }
+});
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
