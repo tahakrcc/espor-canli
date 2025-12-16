@@ -1,7 +1,7 @@
 services:
   # Single Service (Backend + Frontend)
   - type: web
-    name: espor-platform
+    name: espor-canli
     env: node
     plan: starter
     # Build both frontend and backend
@@ -18,7 +18,10 @@ services:
         generateValue: true
       # FRONTEND_URL is own URL in single service
       - key: FRONTEND_URL
-        value: https://espor-platform.onrender.com 
+        value: https://espor-canli.onrender.com
+      # Frontend build-time variable
+      - key: VITE_API_URL
+        value: https://espor-canli.onrender.com 
       
     healthCheckPath: /api/health
 
