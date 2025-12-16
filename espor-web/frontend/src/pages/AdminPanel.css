@@ -1,0 +1,200 @@
+.admin-panel {
+  min-height: 100vh;
+  padding: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: var(--bg-color);
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--surface-color);
+  padding: 20px 30px;
+  border-radius: var(--radius-md);
+  margin-bottom: 30px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.admin-header h1 {
+  color: var(--primary-color);
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.logout-btn {
+  background-color: transparent;
+  color: var(--error-color);
+  border: 1px solid var(--error-color);
+  padding: 8px 20px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #ffebee;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 2px;
+  /* For a connected tab look, or stick to gap */
+  margin-bottom: 30px;
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.admin-tabs button {
+  padding: 12px 24px;
+  border: none;
+  background: transparent;
+  border-bottom: 2px solid transparent;
+  /* Prepare for active state */
+  margin-bottom: -2px;
+  /* sit on the line */
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: none;
+  /* Formal doesn't allow ALL CAPS everywhere */
+  font-size: 15px;
+  border-radius: 0;
+  transition: all 0.2s;
+}
+
+.admin-tabs button:hover {
+  color: var(--primary-color);
+  background-color: rgba(74, 20, 140, 0.05);
+}
+
+.admin-tabs button.active {
+  background: transparent;
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--primary-color);
+  box-shadow: none;
+}
+
+.admin-content {
+  background-color: var(--surface-color);
+  padding: 40px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+}
+
+.admin-section {
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.admin-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.admin-section h2 {
+  color: var(--text-primary);
+  margin-bottom: 25px;
+  font-size: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.form-group {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.form-group input,
+.form-group select {
+  flex: 1;
+  padding: 10px 15px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  height: 42px;
+  /* align with button */
+}
+
+/* Specific button overrides within panel if needed */
+.admin-content button {
+  width: auto;
+  /* reset full width from login css if applied globally */
+  padding: 0 25px;
+  height: 42px;
+  font-size: 14px;
+}
+
+.create-round-btn {
+  background-color: var(--success-color);
+  margin-top: 20px;
+  width: auto;
+}
+
+.create-round-btn:hover:not(:disabled) {
+  background-color: #1B5E20;
+}
+
+.round-actions {
+  display: flex;
+  gap: 15px;
+  margin: 25px 0;
+  padding: 20px;
+  background-color: #F5F5F5;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.round-players {
+  margin-top: 30px;
+}
+
+.round-players h3 {
+  font-size: 16px;
+  margin-bottom: 15px;
+  color: var(--text-primary);
+}
+
+.round-players ul {
+  list-style: none;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.round-players li {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--surface-color);
+}
+
+.round-players li:last-child {
+  border-bottom: none;
+}
+
+.round-players li:hover {
+  background-color: #F9F9F9;
+}
+
+.fetch-leaderboard-btn {
+  width: 100%;
+}

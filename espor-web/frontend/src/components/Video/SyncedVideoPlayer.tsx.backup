@@ -1,0 +1,106 @@
+import React, { useEffect, useRef, useState } from 'react';
+import ReactPlayer from 'react-player';
+import { useSocket } from '../../hooks/useSocket';
+
+interface VideoState {
+    currentVideoUrl: string;
+    currentThumbnailUrl: string;
+    isPlaying: boolean;
+    currentTime: number;
+    volume: number;
+}
+
+export default function SyncedVideoPlayer() {
+    const { socket } = useSocket();
+    const playerRef = useRef<any>(null);
+    const [videoState, setVideoState] = useState<VideoState>({
+        currentVideoUrl: '',
+        currentThumbnailUrl: '',
+        isPlaying: false,
+        currentTime: 0,
+        volume: 100
+    });
+
+    useEffect(() => {
+        if (!socket) return;
+
+        socket.emit('video:request_sync');
+
+        socket.on('video:sync', (newState: VideoState) => {
+            console.log('📡 Video sync received:', newState);
+            setVideoState(newState);
+        });
+
+        return () => {
+            socket.off('video:sync');
+        };
+    }, [socket]);
+
+    const getVideoUrl = () => {
+        const rawUrl = videoState.currentVideoUrl;
+        if (!rawUrl) return '';
+        if (rawUrl.startsWith('http')) return rawUrl;
+
+        const baseUrl = 'http://localhost:3001';
+        return baseUrl + rawUrl;
+    };
+
+    const getThumbnailUrl = () => {
+        const rawUrl = videoState.currentThumbnailUrl;
+        if (!rawUrl) return '';
+        if (rawUrl.startsWith('http')) return rawUrl;
+
+        const baseUrl = 'http://localhost:3001';
+        return baseUrl + rawUrl;
+    };
+
+    return (
+        <div style={{
+            width: '100%',
+            height: '100vh',
+            background: '#000',
+            position: 'relative',
+            overflow: 'hidden'
+        }}>
+            {/* Video Player */}
+            <ReactPlayer
+                ref={playerRef}
+                url={getVideoUrl()}
+                playing={videoState.isPlaying}
+                volume={videoState.volume / 100}
+                muted={true}
+                width="100%"
+                height="100%"
+                controls={true}
+                playsinline={true}
+                onReady={() => console.log('✅ Video Ready')}
+                onPlay={() => console.log('▶️ Playing')}
+                onPause={() => console.log('⏸️ Paused')}
+                onError={(e) => console.error('❌ Error:', e)}
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0
+                }}
+            />
+
+            {/* Thumbnail Overlay - Only when paused */}
+            {!videoState.isPlaying && videoState.currentThumbnailUrl && (
+                <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    zIndex: 10,
+                    backgroundImage: `url("${getThumbnailUrl()}")`,
+                    backgroundSize: 'contain',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundColor: '#000',
+                    pointerEvents: 'none'
+                }} />
+            )}
+        </div>
+    );
+}

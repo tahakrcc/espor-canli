@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Video Test</title>
+</head>
+
+<body>
+    <h1>Direct Video Test</h1>
+    <video controls width="640" height="480">
+        <source src="http://localhost:3001/uploads/videos/video_2.mp4" type="video/mp4">
+        Your browser doesn't support video.
+    </video>
+
+    <h2>Video Info:</h2>
+    <div id="info"></div>
+
+    <script>
+        const video = document.querySelector('video');
+        const info = document.getElementById('info');
+
+        video.addEventListener('loadedmetadata', () => {
+            info.innerHTML += `<p>✅ Metadata loaded - Duration: ${video.duration}s</p>`;
+        });
+
+        video.addEventListener('canplay', () => {
+            info.innerHTML += `<p>✅ Can play - Ready to start</p>`;
+        });
+
+        video.addEventListener('error', (e) => {
+            info.innerHTML += `<p>❌ Error: ${video.error.message}</p>`;
+        });
+
+        video.addEventListener('playing', () => {
+            info.innerHTML += `<p>▶️ Video is playing!</p>`;
+        });
+    </script>
+</body>
+
+</html>

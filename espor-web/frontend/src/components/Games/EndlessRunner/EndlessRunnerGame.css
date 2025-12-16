@@ -1,0 +1,204 @@
+.endless-runner-game.vertical {
+  width: 100%;
+  max-width: 400px;
+  /* Doodle jump is usually portrait */
+  margin: 0 auto;
+  touch-action: none;
+  user-select: none;
+  outline: none;
+}
+
+.game-area {
+  width: 100%;
+  height: 600px;
+  background: radial-gradient(circle at center, #263238 0%, #000000 100%);
+  border-radius: 15px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+  border: 4px solid #00bcd4;
+  cursor: grab;
+}
+
+.game-area:active {
+  cursor: grabbing;
+}
+
+.runner {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  font-size: 30px;
+  line-height: 40px;
+  text-align: center;
+  z-index: 10;
+  transition: transform 0.1s;
+  /* Neon Glow for character */
+  filter: drop-shadow(0 0 8px #e91e63);
+}
+
+.platform {
+  position: absolute;
+  background: linear-gradient(90deg, #00acc1 0%, #00bcd4 100%);
+  border-radius: 20px;
+  box-shadow: 0 0 10px #00bcd4, inset 0 2px 2px rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.score-display {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 800;
+  color: #00bcd4;
+  margin-top: 15px;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 10px 20px;
+  border-radius: 30px;
+  display: inline-block;
+  box-shadow: 0 0 10px #00bcd4;
+  border: 1px solid #00bcd4;
+}
+
+.start-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  padding: 20px 30px;
+  border-radius: 15px;
+  text-align: center;
+  z-index: 20;
+  box-shadow: 0 0 30px rgba(0, 188, 212, 0.5);
+  border: 2px solid #00bcd4;
+  width: 80%;
+  color: white;
+}
+
+.start-screen h2 {
+  color: #00bcd4;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.game-over {
+  color: #ff1744;
+  font-weight: 800;
+  font-size: 24px;
+  animation: pulse 1s infinite;
+  background: rgba(0, 0, 0, 0.9);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #ff1744;
+  box-shadow: 0 0 20px #ff1744;
+}
+
+/* Background decorations (Cyber grid) */
+.game-area::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background-image:
+    linear-gradient(rgba(0, 188, 212, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 188, 212, 0.1) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.3;
+  z-index: 0;
+  transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+  animation: gridMove 20s linear infinite;
+}
+
+@keyframes gridMove {
+  0% {
+    transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px);
+  }
+
+  100% {
+    transform: perspective(500px) rotateX(60deg) translateY(40px) translateZ(-200px);
+  }
+}
+
+@media (max-width: 768px) {
+  .endless-runner-game.vertical {
+    width: 100% !important;
+    max-width: none !important;
+    height: 100vh !important;
+    margin: 0 !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    z-index: 100;
+  }
+
+  .game-area {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .score-display {
+    position: absolute;
+    top: 40px;
+    /* Moved to top as requested */
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    z-index: 20;
+    width: auto;
+  }
+
+  /* Mobile overrides end */
+}
+
+/* ================= THEME: LIGHT MODE (Classic/Doodle) ================= */
+[data-theme='light'] .game-area {
+  background: #ffffff !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+[data-theme='light'] .game-area::before {
+  /* Graph paper effect */
+  background-image:
+    linear-gradient(#e0e0e0 1px, transparent 1px),
+    linear-gradient(90deg, #e0e0e0 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 1;
+  transform: none;
+  /* Flat 2D */
+  animation: none;
+}
+
+[data-theme='light'] .platform {
+  background: linear-gradient(to bottom, #7CB342, #558B2F);
+  border: 2px solid #33691E;
+  box-shadow: 0 5px 0 #1B5E20, 0 8px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+}
+
+[data-theme='light'] .runner {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  /* Shadow instead of glow */
+}
+
+[data-theme='light'] .score-display {
+  color: #333;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .start-screen {
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  border: 2px solid #8bc34a;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='light'] .start-screen h2 {
+  color: #689f38;
+}
