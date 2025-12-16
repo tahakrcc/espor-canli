@@ -5,8 +5,8 @@ services:
     env: node
     plan: starter
     # Build both frontend and backend
-    buildCommand: cd frontend && npm install && npm run build && cd ../backend && npm install
-    startCommand: cd backend && npm start
+    buildCommand: cd espor-web && cd frontend && npm install && npm run build && cd ../backend && npm install
+    startCommand: cd espor-web/backend && npm start
     envVars:
       - key: NODE_ENV
         value: production
