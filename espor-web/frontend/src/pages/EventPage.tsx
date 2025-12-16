@@ -81,7 +81,17 @@ export default function EventPage() {
         setEventName(res.data.event.name);
         setParticipants(res.data.participants);
         setLeaderboard(res.data.leaderboard);
-        
+
+        // Auto-redirect if there is an active round
+        const activeRound = res.data.activeRound;
+        if (activeRound) {
+          if (activeRound.status === 'waiting') {
+            navigate(`/event/${eventId}/waiting/${activeRound.id}`);
+          } else if (activeRound.status === 'playing') {
+            navigate(`/game/${activeRound.id}`);
+          }
+        }
+
         // Check if user is already a participant
         const userIsParticipant = res.data.participants.some((p: Participant) => p.id === user.id);
         setIsParticipant(userIsParticipant);
@@ -91,18 +101,18 @@ export default function EventPage() {
 
   const handleJoinEvent = async () => {
     if (!eventId || !socket || !connected || isJoining) return;
-    
+
     setIsJoining(true);
     try {
       // API call to join
       await api.post(`/events/${eventId}/join`);
-      
+
       // Socket join
       socket.emit('event:join', eventId);
       socket.emit('leaderboard:subscribe', eventId);
-      
+
       setIsParticipant(true);
-      
+
       // Refresh event data
       const res = await api.get(`/events/${eventId}`);
       setParticipants(res.data.participants);
@@ -198,8 +208,8 @@ export default function EventPage() {
               Etkinlikten Ayrıl
             </button>
           ) : (
-            <button 
-              className="join-btn" 
+            <button
+              className="join-btn"
               onClick={handleJoinEvent}
               disabled={isJoining}
             >

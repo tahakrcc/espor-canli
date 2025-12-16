@@ -188,79 +188,84 @@ export const VideoAdminPanel: React.FC<VideoAdminPanelProps> = ({ isDirectorView
         return (
             <div style={{
                 position: 'fixed',
-                bottom: '20px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                backgroundColor: 'rgba(0, 0, 0, 0.9)',
-                padding: '15px 30px',
-                borderRadius: '50px',
+                bottom: '0',
+                left: '0',
+                width: '100%',
+                backgroundColor: 'rgba(0, 0, 0, 0.95)',
+                padding: '20px',
                 display: 'flex',
-                gap: '20px',
+                gap: '30px',
                 alignItems: 'center',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-                zIndex: 1000
+                justifyContent: 'center',
+                boxShadow: '0 -4px 20px rgba(0,0,0,0.5)',
+                zIndex: 1000,
+                borderTop: '1px solid #333'
             }}>
                 {/* Previous */}
                 <button
                     onClick={handlePrevious}
                     disabled={playlist.findIndex(p => p.url === currentUrl) <= 0}
-                    style={{ background: 'none', border: 'none', color: 'white', fontSize: '24px', cursor: 'pointer', opacity: playlist.findIndex(p => p.url === currentUrl) <= 0 ? 0.3 : 1 }}
+                    style={{ background: 'none', border: 'none', color: 'white', fontSize: '32px', cursor: 'pointer', opacity: playlist.findIndex(p => p.url === currentUrl) <= 0 ? 0.3 : 1 }}
                     title="Önceki Video"
                 >
                     ⏮
                 </button>
 
-                {/* Play/Pause */}
+                {/* Play/Pause (Toggle) */}
                 <button
                     onClick={() => {
-                        // Toggle play/pause - backend will handle state
                         console.log('🎮 [TOGGLE] Clicked');
                         socket?.emit('admin:video:control', { action: 'toggle', time: 0 });
                     }}
                     style={{
-                        background: '#4CAF50', // Assuming a default play color, as isPlaying state is removed
+                        background: '#4CAF50',
                         border: 'none',
                         color: 'white',
-                        width: '60px',
-                        height: '60px',
+                        width: '80px',
+                        height: '80px',
                         borderRadius: '50%',
-                        fontSize: '24px',
+                        fontSize: '32px',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        boxShadow: '0 2px 10px rgba(0,0,0,0.3)'
+                        boxShadow: '0 4px 15px rgba(76, 175, 80, 0.4)',
+                        transition: 'transform 0.1s'
                     }}
+                    onMouseDown={e => e.currentTarget.style.transform = 'scale(0.95)'}
+                    onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
                     title="Başlat/Durdur"
                 >
-                    ▶
+                    ⏯
                 </button>
 
                 {/* Next */}
                 <button
                     onClick={handleNext}
                     disabled={playlist.findIndex(p => p.url === currentUrl) >= playlist.length - 1}
-                    style={{ background: 'none', border: 'none', color: 'white', fontSize: '24px', cursor: 'pointer', opacity: playlist.findIndex(p => p.url === currentUrl) >= playlist.length - 1 ? 0.3 : 1 }}
+                    style={{ background: 'none', border: 'none', color: 'white', fontSize: '32px', cursor: 'pointer', opacity: playlist.findIndex(p => p.url === currentUrl) >= playlist.length - 1 ? 0.3 : 1 }}
                     title="Sonraki Video"
                 >
                     ⏭
                 </button>
 
-                {/* Open Panel (Video Tuşu equivalent) */}
+                {/* Panel Toggle */}
                 <button
                     onClick={onToggleMinimize}
                     style={{
+                        position: 'absolute',
+                        right: '30px',
                         background: '#2196F3',
                         border: 'none',
                         color: 'white',
                         padding: '10px 20px',
-                        borderRadius: '20px',
+                        borderRadius: '8px',
                         fontWeight: 'bold',
                         cursor: 'pointer',
-                        marginLeft: '10px'
+                        fontSize: '14px'
                     }}
                 >
-                    PANEL
+                    PANELİ AÇ
                 </button>
             </div>
         );

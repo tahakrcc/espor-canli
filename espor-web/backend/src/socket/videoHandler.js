@@ -79,6 +79,9 @@ function setupVideoSocket(io) {
                 return;
             } else if (data.action === 'volume') {
                 updateVideoState({ volume: data.volume });
+            } else if (data.action === 'toggle') {
+                const currentState = getVideoState();
+                updateVideoState({ isPlaying: !currentState.isPlaying, currentTime: data.time || currentState.currentTime });
             }
 
             // Broadcast to EVERYONE (including other admins)
