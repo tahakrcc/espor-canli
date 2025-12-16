@@ -68,11 +68,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = async (username: string, password: string) => {
     try {
-      await api.post('/auth/register', { username, password });
+      const response = await api.post('/auth/register', { username, password });
+      console.log('Register success:', response.data);
       await login(username, password);
     } catch (error: any) {
       console.error('Register error:', error);
-      throw error;
+      // Extract error message properly
+      const errorMessage = error.response?.data?.error || error.message || 'Kayıt başarısız';
+      const registerError = new Error(errorMessage);
+      (registerError as any).response = error.response;
+      throw registerError;
     }
   };
 

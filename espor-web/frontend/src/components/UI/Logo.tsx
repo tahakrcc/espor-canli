@@ -16,7 +16,26 @@ export default function Logo({ size = 'medium', showText = false, className = ''
   return (
     <div className={`logo-wrapper ${sizeClasses[size]} ${className}`}>
       <div className="logo-icon">
-        <svg width="100%" height="100%" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+        <img 
+          src="/logo.jpg" 
+          alt="İnönü E-Spor Logo" 
+          onError={(e) => {
+            // Fallback to SVG if image not found
+            const target = e.target as HTMLImageElement;
+            target.style.display = 'none';
+            const svg = target.nextElementSibling as HTMLElement;
+            if (svg) svg.style.display = 'block';
+          }}
+          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+        />
+        <svg 
+          width="100%" 
+          height="100%" 
+          viewBox="0 0 120 120" 
+          xmlns="http://www.w3.org/2000/svg" 
+          preserveAspectRatio="xMidYMid meet"
+          style={{ display: 'none' }}
+        >
           <defs>
             <filter id="logo-glow" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>

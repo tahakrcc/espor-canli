@@ -33,7 +33,9 @@ export default function Register() {
       await register(username, password);
       navigate('/event/list');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Kayıt başarısız');
+      console.error('Register page error:', err);
+      const errorMessage = err?.message || err?.response?.data?.error || err?.response?.data?.message || 'Kayıt başarısız';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
