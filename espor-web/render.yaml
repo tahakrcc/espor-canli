@@ -21,7 +21,7 @@ services:
         value: https://espor-canli.onrender.com
       # Frontend build-time variable
       - key: VITE_API_URL
-        value: /api 
+        value: https://espor-canli.onrender.com 
       
     healthCheckPath: /api/health
 

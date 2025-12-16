@@ -69,13 +69,29 @@ export default function SyncedVideoPlayer() {
     const getVideoUrl = (rawUrl: string): string => {
         if (!rawUrl) return '';
         if (rawUrl.startsWith('http')) return rawUrl;
-        return `http://localhost:3001${rawUrl}`;
+
+        // @ts-ignore
+        const api = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+        // Base URL should be the root, not /api if the image/video is static
+        // If VITE_API_URL includes /api, we might need to strip it for static files if they are served from root public/uploads
+        // But backend usually serves stats via express static.
+        // Let's assume VITE_API_URL is the base backend URL (e.g., http://localhost:3001 or https://api.site.com)
+
+        // If api url ends with /api, remove it for static file access if needed, 
+        // OR just append if the rawUrl is like /uploads/...
+
+        const baseUrl = api.endsWith('/api') ? api.replace('/api', '') : api;
+        return `${baseUrl}${rawUrl}`;
     };
 
     const getThumbnailUrl = (rawUrl: string): string => {
         if (!rawUrl) return '';
         if (rawUrl.startsWith('http')) return rawUrl;
-        return `http://localhost:3001${rawUrl}`;
+
+        // @ts-ignore
+        const api = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+        const baseUrl = api.endsWith('/api') ? api.replace('/api', '') : api;
+        return `${baseUrl}${rawUrl}`;
     };
 
     return (

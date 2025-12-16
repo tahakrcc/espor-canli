@@ -113,11 +113,11 @@ export function EndlessRunnerGame({ onScoreUpdate, onGameEnd, onEliminated, roun
 
     // Apply gravity
     runnerVelocity.current += GRAVITY;
-    
+
     setRunnerY(prev => {
       const newY = prev + runnerVelocity.current;
       let finalY = newY;
-      
+
       // Check platform collisions - use current platforms state
       platforms.forEach(platform => {
         const platformScreenY = platform.y - cameraY;
@@ -128,8 +128,9 @@ export function EndlessRunnerGame({ onScoreUpdate, onGameEnd, onEliminated, roun
           newY + RUNNER_SIZE < platformScreenY + PLATFORM_HEIGHT &&
           runnerVelocity.current > 0
         ) {
-          runnerVelocity.current = 0;
-          finalY = platformScreenY - RUNNER_SIZE;
+          // Auto-bounce mechanism (Doodle Jump style)
+          runnerVelocity.current = JUMP_STRENGTH;
+          // finalY = platformScreenY - RUNNER_SIZE; // No need to snap, just bounce
         }
       });
 
@@ -166,7 +167,7 @@ export function EndlessRunnerGame({ onScoreUpdate, onGameEnd, onEliminated, roun
     setPlatforms(prev => {
       const newPlatforms = [...prev];
       const lowestPlatformY = Math.min(...newPlatforms.map(p => p.y));
-      
+
       if (lowestPlatformY > cameraY - 200) {
         for (let i = 0; i < 3; i++) {
           newPlatforms.push({
@@ -189,20 +190,22 @@ export function EndlessRunnerGame({ onScoreUpdate, onGameEnd, onEliminated, roun
     if (e.cancelable) {
       e.preventDefault();
     }
-    jump();
+    if (!gameStarted) {
+      startGame();
+    }
   };
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.code === 'Space' || e.code === 'ArrowUp') {
+      if (!gameStarted && (e.code === 'Space' || e.code === 'ArrowUp')) {
         e.preventDefault();
-        jump();
+        startGame();
       } else if (e.code === 'ArrowLeft') {
         e.preventDefault();
-        runnerX.current = Math.max(0, runnerX.current - 10);
+        runnerX.current = Math.max(0, runnerX.current - 15); // Increased sensitivity
       } else if (e.code === 'ArrowRight') {
         e.preventDefault();
-        runnerX.current = Math.min(300, runnerX.current + 10);
+        runnerX.current = Math.min(300, runnerX.current + 15); // Increased sensitivity
       }
     };
 
@@ -232,7 +235,7 @@ export function EndlessRunnerGame({ onScoreUpdate, onGameEnd, onEliminated, roun
         {platforms.map((platform, i) => {
           const screenY = platform.y - cameraY;
           if (screenY < -50 || screenY > GAME_HEIGHT + 50) return null;
-          
+
           return (
             <div
               key={`platform-${i}`}
