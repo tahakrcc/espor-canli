@@ -128,7 +128,8 @@ export function EndlessRunnerGame({ onScoreUpdate, onGameEnd, onEliminated, roun
           newY + RUNNER_SIZE < platformScreenY + PLATFORM_HEIGHT &&
           runnerVelocity.current > 0
         ) {
-          runnerVelocity.current = 0;
+          // Auto-jump mechanics (Doodle Jump style)
+          runnerVelocity.current = JUMP_STRENGTH;
           finalY = platformScreenY - RUNNER_SIZE;
         }
       });
@@ -194,9 +195,9 @@ export function EndlessRunnerGame({ onScoreUpdate, onGameEnd, onEliminated, roun
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
-      if (e.code === 'Space' || e.code === 'ArrowUp') {
+      if (e.code === 'ArrowUp') {
         e.preventDefault();
-        jump();
+        // jump(); // Auto-jump enabled, manual jump disabled
       } else if (e.code === 'ArrowLeft') {
         e.preventDefault();
         runnerX.current = Math.max(0, runnerX.current - 10);
@@ -246,39 +247,26 @@ export function EndlessRunnerGame({ onScoreUpdate, onGameEnd, onEliminated, roun
   const handleTouchEnd = (e: React.TouchEvent) => {
     touchStartX.current = null;
     touchStartY.current = null;
-
-    // If not swiping, treat as tap/jump
-    if (!isSwiping.current) {
-      jump();
-    }
     isSwiping.current = false;
   };
 
   return (
-    <div
-      className="endless-runner-game vertical"
-      onClick={(e) => {
-        // Only jump if it wasn't a touch interaction that we already handled
-        // But React's onClick might fire after touch. 
-        // Simplest is to just allow onClick for mouse users.
-        // For touch users, handleTouchEnd takes care of jumping.
-        // We can detect if it was a touch event or mouse event?
-        // Actually, let's just leave onClick for mouse.
-        // If touch triggers click, we might jump twice? 
-        // Let's rely on handleTouchEnd preventing default or something?
-        // Or just check e.type
-        handleInteraction(e);
-      }}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-    >
+    className = "endless-runner-game vertical"
+      onClick = {(e) => {
+    // No manual interaction needed for jump
+    handleInteraction(e);
+  }
+}
+onTouchStart = { handleTouchStart }
+onTouchMove = { handleTouchMove }
+onTouchEnd = { handleTouchEnd }
+  >
       <div className="game-instructions">
         {!gameStarted && !gameOver && (
           <div className="start-screen">
             <h2>Endless Runner</h2>
-            <p>Başlamak için dokunun veya SPACE tuşuna basın</p>
-            <p>Sol/Sağ ok tuşları veya kaydırma ile hareket edin</p>
+            <p>Başlamak için dokunun</p>
+            <p>Sadece sağa/sola yönlendirin, karakter otomatik zıplar</p>
           </div>
         )}
         {gameOver && <div className="game-over">Oyun Bitti! Skor: {score}</div>}
@@ -317,7 +305,7 @@ export function EndlessRunnerGame({ onScoreUpdate, onGameEnd, onEliminated, roun
         </div>
       </div>
 
-      {gameStarted && <div className="score-display">Skor: {score}</div>}
-    </div>
+{ gameStarted && <div className="score-display">Skor: {score}</div> }
+    </div >
   );
 }

@@ -85,7 +85,7 @@ class GameService {
          rp.metadata
        FROM game_rounds gr
        JOIN round_participants rp ON rp.round_id = gr.id
-       WHERE gr.id = $1 AND rp.status IN ('finished', 'eliminated') AND rp.score > 0`,
+       WHERE gr.id = $1 AND rp.status IN ('finished', 'eliminated', 'playing') AND rp.score > 0`,
       [roundId]
     );
 

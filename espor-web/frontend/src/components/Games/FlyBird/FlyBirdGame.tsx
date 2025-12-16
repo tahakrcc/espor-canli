@@ -28,8 +28,10 @@ export function FlyBirdGame({ onScoreUpdate, onGameEnd, onEliminated, roundId }:
   // Game constants - adjusted for EASIEST gameplay (Moon Gravity)
   const GRAVITY = 0.15; // Extremely floaty
   const JUMP_STRENGTH = -4; // Gentle nudge
-  const OBSTACLE_SPEED = 2; // Slow speed
-  const OBSTACLE_SPAWN_RATE = 2800; // Very slow spawn
+
+  const BASE_SPEED = 2; // Starting speed
+  const MAX_SPEED = 8; // Maximum speed limit
+  const OBSTACLE_SPAWN_RATE_BASE = 2800; // Base spawn rate
   const [gameHeight, setGameHeight] = useState(window.innerHeight > 600 ? 500 : window.innerHeight - 100);
   const BIRD_SIZE = 24; // Smaller bird hitbox
 
@@ -144,13 +146,17 @@ export function FlyBirdGame({ onScoreUpdate, onGameEnd, onEliminated, roundId }:
       return;
     }
 
-    if (Date.now() - lastSpawnTime.current > OBSTACLE_SPAWN_RATE) {
+    // Calculate speed based on score
+    const currentSpeed = Math.min(BASE_SPEED + (score * 0.1), MAX_SPEED);
+    const currentSpawnRate = Math.max(1000, OBSTACLE_SPAWN_RATE_BASE - (score * 50));
+
+    if (Date.now() - lastSpawnTime.current > currentSpawnRate) {
       spawnObstacle();
       lastSpawnTime.current = Date.now();
     }
 
     obstacles.current.forEach((obs) => {
-      obs.x -= OBSTACLE_SPEED;
+      obs.x -= currentSpeed;
 
       const birdLeft = 50;
       const birdRight = 50 + BIRD_SIZE;
